@@ -1,0 +1,56 @@
+@charset "utf-8";
+/* linkek aláhúzásának törlése */
+:link,:visited{text-decoration:none;} 
+/* listák elõl töröljük a pöttyöket és számokat */
+ul,ol {list-style:none;}
+/* az automatikus címsor méret beállítás törlése */
+h1, h2, h3, h4, h5, h6, pre, code{font-size:1em;}
+.h3{
+	font-size:18px;
+	font-weight:bold;
+}
+/* töröljük az egyéb elemek köré berakott paddingot és margint is */
+ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, body, html, p, blockquote, fieldset, input, table, td, tr{margin:0;padding:0;border-spacing:0;}
+/* szedjük ki a linkelt képek köré rakott keretet */
+a img,:link img,:visited img{border:none;}
+html, body{
+	font-family:"Times New Roman", Arial, serif;
+	font-size:16px;
+	color: rgb(50, 50, 0);
+	background:rgb(165 231 170);
+	margin:0;
+	padding:0 0 0 0;
+	width:100%;
+ 	overflow:auto;
+/*	min-width:928px;*/
+}
+#head{
+	position:static; 
+	text-align: center;
+	border: 1px solid black;
+	background:brown;
+	color: white;
+	height: 30px;
+}
+#tartalom{
+	position:static;
+	text-align: center;
+	color: rgb(131 106 68);
+	margin-top: 30px;
+}
+#foot{
+	border: 1px solid black;
+	background:brown;
+	color: white;
+	position:fixed;
+	bottom:0;
+	left:0;
+	font-size:12px;
+	text-align: center;
+	vertical-align: midle;
+	width: 100%;
+	height: 22px;
+	text-decoration: none;
+	padding-top:0px;
+
+}
