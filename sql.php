@@ -17,13 +17,14 @@ $res = $conn->query($sql); // az utasítás csak most fut le
 // html táblázatként íratjuk ki;
 echo '<table border=1>';
 echo '<tr>'; // táblázat fejléce
-echo '<th>ID</th>';
+echo '<th>ID</th> <th>user</th>';
 echo '</tr>';
 
 // a táblázat sorai
 foreach ( $res as $current_row) { // most asszociatív tömbként kezeljük a sorokat
    echo '<tr>';
    echo '<td>' . $current_row["id"] . '</td>';
+   echo '<td>' . $current_row["user"] . '</td>';
    echo '</tr>';
 }
 echo '</table>';

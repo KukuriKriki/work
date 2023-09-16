@@ -21,41 +21,128 @@ include("dbconn.php");
 //----------------------------------
 function nev()
 {
-	$adat="Net Note";
+	$adat="Work";
 	return $adat;
 }
 //----------------------------------
-//Leírás: Az összes felhasználó nevét kiírja.
+//Leírás: A user munkáit kiírja.
 //Bemenő adatok: -
 //kimenő adat: -
 //----------------------------------
-function user_kiir()
+function munka()
 {
-	$parancs = (" SELECT * FROM `user` ")or die(mysql_error());
-	$eredmeny = mysql_query($parancs);
-	if (!$parancs)
+	include("dbconn.php");
+	try
 	{
-		die("Érvénytelen lekérdezés: " . mysql_error());
-	}
-	
-	while($sor=mysql_fetch_array($eredmeny))
+		$sql = "SELECT * FROM worktime"; // ez csak egy string, még nem hajtódik végre
+		$res = $conn->query($sql); // az utasítás csak most fut le
+		
+		// a táblázat sorai
+		echo "<table>";
+		echo "<tr>";
+		echo "<th class='id'>Id</th>";
+		echo "<th class='user_id'>user_id</th>";
+		echo "<th class='work_id'>work_id</th>";	
+		echo "<th class='start'>Start</th>";
+		echo "<th class='stop'>Stop</th>";
+		echo "<th class='pause'>Pause</th>";
+		echo "<th class='work_time'>Ledolgozott iő</th>";		
+		echo "<th class='ido'>idő</th>";		
+		echo "</tr>";
+		while ($user = $res->fetch())
 		{
-			printf("				
-			<table>
-				<tr>
-					<td width=\"100\">
-						<span class=\"login\">
-							%d
-						</span>
-						</td>
-						<td style=\"text-align: right;\"width=\"65\">
-							<span class=\"login\">
-								%s
-							</span>
-						</td>
-					</tr>
-			</table>
-	",$sor["id"],$sor["user"]);
+			$ledolgozott=ledolgozott_ido($user["id"]);
+			print("<tr class='adatsor'><td class='id'>$user[id]</td> <td class='user_id'>$user[user_id]</td> <td class='work_id'>".munkanev_keres($user["work_id"])."</td> <td class='start'>".ora_perc($user["start"])."</td> <td class='stop'>".ora_perc($user["stop"])."</td> <td class='pause'>$user[pause]</td> <td class='work_time'>".$ledolgozott."</td><td class='ido'>$user[time]</td></tr>");
 		}
+		echo "</table><br>";
 	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+}
+//Leírás: Egy adott munka nevét adja vissza.
+//Bemenő adatok: Munka work_id száma.
+//kimenő adat: A munka neve.
+//----------------------------------
+function munkanev_keres($id)
+{
+include("dbconn.php");
+	try
+	{
+		$sql = "SELECT * FROM work WHERE work_id=$id"; // ez csak egy string, még nem hajtódik végre
+		$res = $conn->query($sql); // az utasítás csak most fut le
+		$adat = $res->fetch();
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+	return $adat["work_name"];
+}
+//Leírás: Egy adott munka nevét adja vissza.
+//Bemenő adatok: Munka work_id száma.
+//kimenő adat: A munka neve.
+//----------------------------------
+function ledolgozott_ido($id)
+{
+include("dbconn.php");
+	try
+	{
+		$sql = "SELECT ROUND(((`stop`-`start`)/10000 -(`pause`/60)),1) FROM `worktime` WHERE `id`=$id";// ez csak egy string, még nem hajtódik végre
+		$res = $conn->query($sql); // az utasítás csak most fut le
+		$adat = $res->fetch();
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+	return $adat[0];
+}
+//Leírás: Az oldal nevének a beállítása.
+//Bemenő adatok: -
+//kimenő adat: Az oldal neve.
+//----------------------------------
+function teszt()
+{
+	$adat="Work";
+	print("Ez egy próba szöveg".nev()."<br>".user_kiir());
+}
+//----------------------------------
+//Leírás: Dátumot év.ho.nap formátumra szűkít..
+//Bemenő Teljes dátum.
+//kimenő adat: Szöveg ami a rövid dátum formátumot tartalmazza..
+//----------------------------------
+function ev_honap_nap($ido)
+{
+	$datum=strtotime($ido);
+	$rovid=date("Y.m.d",$datum);
+	if(!$datum)
+	{
+		return "";
+	}
+	else
+	{
+		return $rovid;
+	}
+}
+//----------------------------------
+//Leírás: Dátumot óra.perc. formátumra szűkít..
+//Bemenő Teljes dátum.
+//kimenő adat: Szöveg ami a rövid dátum formátumot tartalmazza..
+// https://www.w3schools.com/php/func_date_date_format.asp
+//----------------------------------
+function ora_perc($ido)
+{
+	$datum=strtotime($ido);
+	$rovid=date("G:i",$datum);
+	if(!$datum)
+	{
+		return "";
+	}
+	else
+	{
+		return $rovid;
+	}
+}
 ?>

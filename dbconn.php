@@ -1,16 +1,16 @@
-<?
-  // adatok felvétele a kapcsolathoz
+<?php
+  // adatok felvÃ©tele a kapcsolathoz
   $servername = "netnote.hu";
   $username = "c1netnoteadmin";
   $password = "Szabok10";
   $dbname = "c1munka";
 
-  // megpróbálunk csatlakozni a "try"-ban, ha nem sikerül, akkor elkapjuk a hibát a "catch"-ben
+  // megprÃ³bÃ¡lunk csatlakozni a "try"-ban, ha nem sikerÃ¼l, akkor elkapjuk a hibÃ¡t a "catch"-ben
   try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password); // PDO kapcsolat létrehozása
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // hibakezelés beállítása
-    echo "Sikeres csatlakozás."; // sikeres csatlakozás visszajelzés
+    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password); // PDO kapcsolat lÃ©trehozÃ¡sa
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // hibakezelÃ©s beÃ¡llÃ­tÃ¡sa
+//    echo "Sikeres csatlakozÃ¡s."; // sikeres csatlakozÃ¡s visszajelzÃ©s
   } catch (PDOException $e) {
-    echo "Sikertelen csatlakozás: " . $e->getMessage(); //visszajelzés sikertelen csatlakozásról
+    echo "Sikertelen csatlakozÃ¡s: " . $e->getMessage(); //visszajelzÃ©s sikertelen csatlakozÃ¡srÃ³l
   }
 ?>

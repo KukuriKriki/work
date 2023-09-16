@@ -54,3 +54,108 @@ html, body{
 	padding-top:0px;
 
 }
+th.kozepre{
+	text-align: center;
+	padding: 1px 10px 1px 10px;
+	margin: 10px;
+    background-color: #04AA6D;
+    color: white;
+
+}
+tr:nth-child(even){background-color: #f2f2f2}
+
+tr.adatsor{
+	text-align: center;
+
+	margin: 1px;
+}
+td{
+	border-top: 1px solid black;
+	padding: 1px 20px 1px 20px;
+}
+th.id{
+	text-align: center;
+}
+th.user_id{
+	text-align: center;
+}
+th.work_id{
+	text-align: center;
+}
+th.start{
+	text-align: center;
+}
+th.stop{
+	text-align: center;
+}
+th.pause{
+	text-align: center;
+}
+th.work_time{
+	text-align: center;	
+}
+
+th.ido{
+	
+}
+td.id{
+	text-align: right;
+}
+td.user_id{
+	text-align: left;
+}
+td.work_id{
+	text-align: left;
+}
+td.start{
+	text-align: right;
+}
+td.stop{
+	text-align: right;
+}
+td.pause{
+	text-align: right;
+}
+td.work_time{
+	text-align: right;	
+}
+td.ido{
+	
+}
+#balcsik{
+	width:100px;
+	float: left;
+	clear:left;
+}
+#kozepso{
+	margin-left: 100px;
+    margin-right: 100px;
+}
+#jobbcsik{
+	width:100px;
+	float: right;
+}
+.tavtarto2
+{
+/*	clear:both;*/
+	height: 5px;
+}
+}
+.tabla_fej{
+	margin-left: auto;
+    margin-right: auto;
+	padding-left: 20px;
+	padding-right: 20px;
+	width: 710px;
+	height: 24px;
+}
+.tabla_kozep{
+	margin: 0 auto 0 auto;
+	width: 910px;
+	padding-left: 20px;
+	padding-right: 20px;
+	text-align: center;
+}
+table{
+	margin: 0 auto 0 auto;
+}
