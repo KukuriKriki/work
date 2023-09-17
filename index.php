@@ -1,6 +1,10 @@
 <?php
 ob_start();
 include("fgv.php");
+$ev=date("Y");
+$ho=date("m");
+if(isset($_GET["ev"])){ $ev = $_GET["ev"]; }
+if(isset($_GET["ho"])){ $ho = $_GET["ho"]; }
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -16,6 +20,9 @@ include("fgv.php");
 
 			</div>
 			<div id='balcsik'>
+				<?php
+					honap_lista($ev,$ho);
+				?>
 			</div>
 			<div id='jobbcsik'>
 			</div>
@@ -27,7 +34,8 @@ include("fgv.php");
 					</div>
 					<div class="tabla_kozep">
 						<?php
-							munka();
+							munka_fejlec(1,$ev,$ho);
+							munka(1,$ev,$ho);
 						?>
 					</div>
 				</div>

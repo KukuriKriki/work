@@ -99,7 +99,7 @@ th.ido{
 	
 }
 td.id{
-	text-align: right;
+	text-align: left;
 }
 td.user_id{
 	text-align: left;
@@ -151,11 +151,19 @@ td.ido{
 }
 .tabla_kozep{
 	margin: 0 auto 0 auto;
-	width: 910px;
+	width: 1024px;
 	padding-left: 20px;
 	padding-right: 20px;
 	text-align: center;
 }
 table{
 	margin: 0 auto 0 auto;
+}
+.fejlec_nev{
+	font-size: 25px;
+	font-weight: bold;
+}
+.fejlec_datum{
+	font-size: 20px;
+	font-weight: bold;
 }
