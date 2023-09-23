@@ -6,7 +6,7 @@ $ev=date("Y");
 $ho=date("m");
 if(isset($_GET["ev"])){ $ev = $_GET["ev"]; }
 if(isset($_GET["ho"])){ $ho = $_GET["ho"]; }
-munka_uj_feldolgoz($user);
+if(isset($_GET["worktime_id"])){ $worktime_id = $_GET["worktime_id"]; }
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -36,11 +36,9 @@ munka_uj_feldolgoz($user);
 					</div>
 					<div class="tabla_kozep">
 						<?php
-							
-							munka_fejlec($user,$ev,$ho);
-							munka($user,$ev,$ho);
-							munka_uj($user);
-							worktime_delet($user,59);
+						
+						worktime_delet($user,$worktime_id);
+						header("Location:index.php");
 						?>
 					</div>
 				</div>

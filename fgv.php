@@ -49,7 +49,7 @@ function munka($id,$ev,$ho)
 	try
 	{
 		$hoand=$ho+1;
-		$sql = "SELECT * FROM `worktime` WHERE `user_id`=1 AND `start`>\"$ev-$ho-01\" AND `stop`<\"$ev-$hoand-01\"ORDER BY `start`";
+		$sql = "SELECT * FROM `worktime` WHERE `user_id`=$id AND `start`>\"$ev-$ho-01\" AND `stop`<\"$ev-$hoand-01\"ORDER BY `start`";
 		echo $sql;
 		$res = $conn->query($sql); // az utasítás csak most fut le
 		// a táblázat sorai
@@ -68,7 +68,11 @@ function munka($id,$ev,$ho)
 		{
 			$nap=het_napja($user["start"]);
 			$datum=ev_honap_nap($user["start"]);
-			print("<tr class='adatsor'><td class='id'>$nap</td> <td class='user_id'>$datum</td> <td class='work_id'>".munkanev_keres($user["work_id"])."</td> <td class='start'>".ora_perc($user["start"])."</td> <td class='stop'>".ora_perc($user["stop"])."</td> <td class='pause'>$user[pause]</td> <td class='work_time'>$user[work_time]</td><td class='ido'>$user[time]</td></tr>");
+			if(felvett_munka_ellenorzes($id,$user["work_id"]))
+			{
+			$delete_link="munka_torol.php?worktime_id=$user[id]";
+			print("<tr class='adatsor'><td class='id'>$nap</td> <td class='user_id'>$datum</td> <td class='work_id'>".munkanev_keres($user["work_id"])."</td> <td class='start'>".ora_perc($user["start"])."</td> <td class='stop'>".ora_perc($user["stop"])."</td> <td class='pause'>$user[pause]</td> <td class='work_time'>$user[work_time]</td><td class='ido'>$user[time]</td><td><div class'record_delet'><a href=$delete_link><img src='./image/1x15.png'></a></div></td></tr>");
+			}
 		}
 		echo "</table><br>";
 	}
@@ -312,7 +316,7 @@ function honap($honap)
 //Bemenő -
 //kimenő adat: Hónap neveinek listája linkel.
 //----------------------------------
-function honap_lista($ev,$ho)
+function honap_lista($user,$ev,$ho)
 {
 	$elozo=$ev-1;
 	$kovetkezo=$ev+1;
@@ -326,18 +330,18 @@ function honap_lista($ev,$ho)
 	echo "<div>";
 	echo "<table>";
 	echo "<tr><th>Hónapok</th><th>rekordok</th><th>órák</th></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=1'>Január</a></td><td>".ledolgozott_ido_havi(1,$ev,1)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=2'>Február</a></td><td>".ledolgozott_ido_havi(1,$ev,2)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=3'>Március</a></td><td>".ledolgozott_ido_havi(1,$ev,3)."</td><td></td></tr>";	
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=4'>Április</a></td><td>".ledolgozott_ido_havi(1,$ev,4)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=5'>Május</a></td><td>".ledolgozott_ido_havi(1,$ev,5)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=6'>Június</a></td><td>".ledolgozott_ido_havi(1,$ev,6)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=7'>Július</a></td><td>".ledolgozott_ido_havi(1,$ev,7)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=8'>Augusztus</a></td><td>".ledolgozott_ido_havi(1,$ev,8)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=9'>Szeptember</a></td><td>".ledolgozott_ido_havi(1,$ev,9)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=10'>Október</a></td><td>".ledolgozott_ido_havi(1,$ev,10)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=11'>November</a></td><td>".ledolgozott_ido_havi(1,$ev,11)."</td><td></td></tr>";
-	echo "<tr><td><a href='/index.php?ev=$ev&ho=12'>December</a></td><td>".ledolgozott_ido_havi(1,$ev,12)."</td><td></td></tr>";	
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=1'>Január</a></td><td>".ledolgozott_ido_havi($user,$ev,1)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=2'>Február</a></td><td>".ledolgozott_ido_havi($user,$ev,2)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=3'>Március</a></td><td>".ledolgozott_ido_havi($user,$ev,3)."</td><td></td></tr>";	
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=4'>Április</a></td><td>".ledolgozott_ido_havi($user,$ev,4)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=5'>Május</a></td><td>".ledolgozott_ido_havi($user,$ev,5)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=6'>Június</a></td><td>".ledolgozott_ido_havi($user,$ev,6)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=7'>Július</a></td><td>".ledolgozott_ido_havi($user,$ev,7)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=8'>Augusztus</a></td><td>".ledolgozott_ido_havi($user,$ev,8)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=9'>Szeptember</a></td><td>".ledolgozott_ido_havi($user,$ev,9)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=10'>Október</a></td><td>".ledolgozott_ido_havi($user,$ev,10)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=11'>November</a></td><td>".ledolgozott_ido_havi($user,$ev,11)."</td><td></td></tr>";
+	echo "<tr><td><a href='/index.php?ev=$ev&ho=12'>December</a></td><td>".ledolgozott_ido_havi($user,$ev,12)."</td><td></td></tr>";	
 	echo "</table>";
 	echo "</div>";
 	
@@ -346,7 +350,7 @@ function honap_lista($ev,$ho)
 //Bemenő adatok: user_id,work_id,start,stop,pause,work_time.
 //kimenő adat: -
 //----------------------------------
-function munka_uj($id)
+function munka_uj($user)
 {
 	include("dbconn.php");
 	$datum=date("Y-m-d");
@@ -367,6 +371,7 @@ function munka_uj($id)
 		echo "<td class=\"work_id\"><select name=\"munka_nev\" >"; 
 		
 		$sql = "SELECT * FROM `work` WHERE 1";
+		$sql = "SELECT id, user_id, work.work_id, work_name FROM felvett_munka LEFT JOIN work ON felvett_munka.work_id=work.work_id WHERE user_id=$user";
 		$res = $conn->query($sql); // az utasítás csak most fut le
 		try
 		{	
@@ -461,22 +466,12 @@ function munka_uj($id)
 	echo '</form>';
 	echo "</div>";	
 
-	try
-	{
-//		$sql = "INSERT INTO `worktime` (`id`, `user_id`, `work_id`, `start`, `stop`, `pause`, `work_time`, `time`) VALUES (NULL, \'1\', \'9\', \'2023-09-19 08:00:00\', \'2023-09-19 16:00:00\', \'30\', \'7.5\', current_timestamp())";
-//		$res = $conn->query($sql); // az utasítás csak most fut le
-	}
-	catch(PDOException $e)
-	{
-		echo $e->getMessage();
-	}
-	return $adat[0];
 }
 //Leírás: Az oldal nevének a beállítása.
 //Bemenő adatok: -
 //kimenő adat: Az oldal neve.
 //----------------------------------
-function munka_uj_feldolgoz()
+function munka_uj_feldolgoz($user)
 {
 	include("dbconn.php");
 	if(isset($_POST["ev"])){ $ev = $_POST["ev"]; }
@@ -489,7 +484,7 @@ function munka_uj_feldolgoz()
 	if($munka_nev)
 	{	
 		$ertek_1=NULL;
-		$ertek_2=1;
+		$ertek_2=$user;
 		$ertek_3=$munka_nev;
 		$ertek_4=$munka_datum." ".$munka_start.":00";
 		$ertek_5=$munka_datum." ".$munka_stop.":00";
@@ -529,4 +524,43 @@ $mire = array("\"a\", \"b\", \"c\", \"d\", \"e\", \"f\", \"g\", \"h\", \"i\", \"
 $nevjo  = str_replace($mit, $mire, $nev, $count);
 return $nevjo;
 }
+//----------------------------------
+//Leírás: Egy felhasználó jogosultságát ellenőrzi egy felvett munkához.
+//Bemenő adatok: - user_id, work_id 
+//kimenő adat: - Rögzítést tartalmazó rekord id száma. Ha van!
+//----------------------------------
+function felvett_munka_ellenorzes($user_id,$work_id)
+{
+	include("dbconn.php");
+	try
+	{
+		$sql = "SELECT * FROM `felvett_munka` WHERE `user_id`=$user_id AND `work_id`=$work_id";
+		$res = $conn->query($sql); // az utasítás csak most fut le
+		$adat = $res->fetch();
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+	return $adat[0];	
+}
+//Leírás: Egy adat törlése a worktime táblából.
+//Bemenő adatok: User id száma, worktime_id.
+//kimenő adat: -
+//----------------------------------
+function worktime_delet($user_id,$worktime_id)
+{
+	include("dbconn.php");
+	$sql = "DELETE FROM `worktime` WHERE `worktime`.`id` = $worktime_id";
+	try
+	{
+		$res = $conn->query($sql); // az utasítás csak most fut le
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+}
+
+
 ?>
