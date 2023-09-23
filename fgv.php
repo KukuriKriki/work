@@ -49,7 +49,7 @@ function munka($id,$ev,$ho)
 	try
 	{
 		$hoand=$ho+1;
-		$sql = "SELECT * FROM `worktime` WHERE `user_id`=1 AND `start`>\"$ev-$ho-01\" AND `stop`<\"$ev-$hoand-01\"";
+		$sql = "SELECT * FROM `worktime` WHERE `user_id`=1 AND `start`>\"$ev-$ho-01\" AND `stop`<\"$ev-$hoand-01\"ORDER BY `start`";
 		echo $sql;
 		$res = $conn->query($sql); // az utasítás csak most fut le
 		// a táblázat sorai
@@ -134,12 +134,6 @@ include("dbconn.php");
 	}
 	return $adat[0];
 }
-//Leírás: Az oldal nevének a beállítása.
-//Bemenő adatok: -
-//kimenő adat: Az oldal neve.
-//----------------------------------
-
-
 //Leírás: Egy adott worktime id sorának a ledolgozott idejét adja vissza.
 //Bemenő adatok: User id száma, év, hó.
 //kimenő adat: A ledolgozott idő órában.
@@ -347,5 +341,192 @@ function honap_lista($ev,$ho)
 	echo "</table>";
 	echo "</div>";
 	
+}
+//Leírás: Új rekord felvétele a work táblába
+//Bemenő adatok: user_id,work_id,start,stop,pause,work_time.
+//kimenő adat: -
+//----------------------------------
+function munka_uj($id)
+{
+	include("dbconn.php");
+	$datum=date("Y-m-d");
+	echo "<div>";
+	echo '<form action="index.php" method="post">';
+	echo '<table>';
+		echo "<tr>";
+		echo "<th class='id'>Id</th>";
+		echo "<th class='user_id'>Dátum</th>";
+		echo "<th class='work_id'>Munka neve</th>";	
+		echo "<th class='start'>Kezdés</th>";
+		echo "<th class='stop'>Befejezés</th>";
+		echo "<th class='pause'>Étkezési idő</th>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td class='id'>Id</td>";
+		echo "<td class=\"user_id\"><input type=\"text\" name=\"munka_datum\" value=$datum /></td>";
+		echo "<td class=\"work_id\"><select name=\"munka_nev\" >"; 
+		
+		$sql = "SELECT * FROM `work` WHERE 1";
+		$res = $conn->query($sql); // az utasítás csak most fut le
+		try
+		{	
+			while ($adat = $res->fetch())
+			{
+				$adat1=$adat["work_id"];
+				$adat2=$adat["work_name"];
+				echo "<option value=\"$adat1\">$adat2</option>";
+			}
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}
+		echo "</select></td>";	
+		echo "<td class=\"start\"><select name=\"munka_start\" >";
+		echo "<option value=\"6:00\">6:00</option>";		
+		echo "<option value=\"6:30\">6:30</option>";		
+		echo "<option value=\"7:00\">7:00</option>";
+		echo "<option value=\"7:30\">7:30</option>";
+		echo "<option value=\"8:00\">8:00</option>";
+		echo "<option value=\"8:30\">8:30</option>";		
+		echo "<option value=\"9:00\">9:00</option>";
+		echo "<option value=\"9:30\">9:30</option>";
+		echo "<option value=\"10:00\">10:00</option>";
+		echo "<option value=\"10:30\">10:30</option>";
+		echo "<option value=\"11:00\">11:00</option>";
+		echo "<option value=\"11:30\">11:30</option>";
+		echo "<option value=\"12:00\">12:00</option>";
+		echo "<option value=\"12:30\">12:30</option>";
+		echo "<option value=\"13:00\">13:00</option>";
+		echo "<option value=\"13:30\">13:30</option>";
+		echo "<option value=\"14:00\">14:00</option>";
+		echo "<option value=\"14:30\">14:30</option>";		
+		echo "<option value=\"15:00\">15:00</option>";
+		echo "<option value=\"15:30\">15:30</option>";
+		echo "<option value=\"16:00\">16:00</option>";
+		echo "<option value=\"16:30\">16:30</option>";
+		echo "<option value=\"17:00\">17:00</option>";
+		echo "<option value=\"17:30\">17:30</option>";
+		echo "<option value=\"18:00\">18:00</option>";
+		echo "<option value=\"18:30\">18:30</option>";
+		echo "<option value=\"19:00\">19:00</option>";
+		echo "<option value=\"19:30\">19:30</option>";
+		echo "<option value=\"20:00\">20:00</option>";
+		echo "<option value=\"20:30\">20:30</option>";
+		echo "<option value=\"21:00\">21:00</option>";		
+		echo "</select></td>";
+		echo "</select></td>";	
+		echo "<td class=\"stop\"><select name=\"munka_stop\" >";
+		echo "<option value=\"6:00\">6:00</option>";		
+		echo "<option value=\"6:30\">6:30</option>";		
+		echo "<option value=\"7:00\">7:00</option>";
+		echo "<option value=\"7:30\">7:30</option>";
+		echo "<option value=\"8:00\">8:00</option>";
+		echo "<option value=\"8:30\">8:30</option>";		
+		echo "<option value=\"9:00\">9:00</option>";
+		echo "<option value=\"9:30\">9:30</option>";
+		echo "<option value=\"10:00\">10:00</option>";
+		echo "<option value=\"10:30\">10:30</option>";			
+		echo "<option value=\"11:00\">11:00</option>";
+		echo "<option value=\"11:30\">11:30</option>";
+		echo "<option value=\"12:00\">12:00</option>";
+		echo "<option value=\"12:30\">12:30</option>";
+		echo "<option value=\"13:00\">13:00</option>";
+		echo "<option value=\"13:30\">13:30</option>";
+		echo "<option value=\"14:00\">14:00</option>";
+		echo "<option value=\"14:30\">14:30</option>";		
+		echo "<option value=\"15:00\">15:00</option>";
+		echo "<option value=\"15:30\">15:30</option>";
+		echo "<option value=\"16:00\">16:00</option>";
+		echo "<option value=\"16:30\">16:30</option>";
+		echo "<option value=\"17:00\">17:00</option>";
+		echo "<option value=\"17:30\">17:30</option>";
+		echo "<option value=\"18:00\">18:00</option>";
+		echo "<option value=\"18:30\">18:30</option>";
+		echo "<option value=\"19:00\">19:00</option>";
+		echo "<option value=\"19:30\">19:30</option>";
+		echo "<option value=\"20:00\">20:00</option>";
+		echo "<option value=\"20:30\">20:30</option>";
+		echo "<option value=\"21:00\">21:00</option>";		
+		echo "</select></td>";	
+		echo "<td class=\"pause\"><select name=\"munka_etkezes\" >";
+		echo "<option value=\"0\">0:00</option>";		
+		echo "<option value=\"30\">0:30</option>";
+		echo "<option value=\"45\">0:45</option>";
+		echo "<option value=\"60\">1:00</option>";
+		echo "</select></td>";	
+		echo '<td><input type="submit" value="Rögzít"</td>';
+		echo '</tr>';		
+	echo '</table>';
+	echo '</form>';
+	echo "</div>";	
+
+	try
+	{
+//		$sql = "INSERT INTO `worktime` (`id`, `user_id`, `work_id`, `start`, `stop`, `pause`, `work_time`, `time`) VALUES (NULL, \'1\', \'9\', \'2023-09-19 08:00:00\', \'2023-09-19 16:00:00\', \'30\', \'7.5\', current_timestamp())";
+//		$res = $conn->query($sql); // az utasítás csak most fut le
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+	return $adat[0];
+}
+//Leírás: Az oldal nevének a beállítása.
+//Bemenő adatok: -
+//kimenő adat: Az oldal neve.
+//----------------------------------
+function munka_uj_feldolgoz()
+{
+	include("dbconn.php");
+	if(isset($_POST["ev"])){ $ev = $_POST["ev"]; }
+	if(isset($_POST["ho"])){ $ho = $_POST["ho"]; }
+	if(isset($_POST["munka_datum"])){ $munka_datum = $_POST["munka_datum"]; }
+	if(isset($_POST["munka_nev"])){ $munka_nev = $_POST["munka_nev"]; }
+	if(isset($_POST["munka_start"])){ $munka_start = $_POST["munka_start"]; }
+	if(isset($_POST["munka_stop"])){ $munka_stop = $_POST["munka_stop"]; }
+	if(isset($_POST["munka_etkezes"])){ $munka_etkezes = $_POST["munka_etkezes"]; }
+	if($munka_nev)
+	{	
+		$ertek_1=NULL;
+		$ertek_2=1;
+		$ertek_3=$munka_nev;
+		$ertek_4=$munka_datum." ".$munka_start.":00";
+		$ertek_5=$munka_datum." ".$munka_stop.":00";
+		$ertek_6=$munka_etkezes;
+		$ertek_7=8;
+		$ertek_8=time();
+			try
+			{
+				$beszur=$conn->prepare("INSERT INTO worktime (user_id, work_id, start, stop, pause, work_time) VALUES (:ertek2, :ertek3, :ertek4, :ertek5, :ertek6, :ertek7)");
+				$beszur->bindParam(':ertek2', $ertek_2);
+				$beszur->bindParam(':ertek3', $ertek_3);
+				$beszur->bindParam(':ertek4', $ertek_4);
+				$beszur->bindParam(':ertek5', $ertek_5);
+				$beszur->bindParam(':ertek6', $ertek_6);
+				$beszur->bindParam(':ertek7', $ertek_7);
+			$beszur->execute();
+			}
+			catch(PDOException $e)
+			{
+				echo $e->getMessage();
+			}
+		$conn = null; // lezárjuk az adatbázis-kapcsolatot
+	header("Location:index.php");
+	}
+
+
+}
+//----------------------------------
+//Leírás: Egy szöveget átalakít ékezet nélküli szöveggé és  kis betűvé.
+//Bemenő adatok: - Bármilyen ékezetes szöveg
+//kimenő adat: - Angol ABC betűkkel helyettesített ékezetes karakterek. Minden betűről leveszi az ékezetet. Csak kis betűk lesznek.
+//----------------------------------
+function angolabc($nev)
+{
+$mit = array("\"A\", \"B\", \"C\", \"D\", \"E\", \"F\", \"G\", \"H\", \"I\", \"J\", \"K\", \"L\", \"M\", \"N\", \"O\", \"P\", \"Q\", \"R\", \"S\", \"T\", \"U\", \"V\", \"W\", \"X\", \"Y\", \"Z\", \"Á\", \"É\", \"Í\", \"Ó\", \"Ő\", \"Ö\", \"Ú\", \"Ű\", \"á\", \"é\", \"í\", \"ó\", \"ő\", \"ö\", \"ú\", \"ű\", \"Ü\", \"ü\", \"");
+$mire = array("\"a\", \"b\", \"c\", \"d\", \"e\", \"f\", \"g\", \"h\", \"i\", \"j\", \"k\", \"l\", \"m\", \"n\", \"o\", \"p\", \"q\", \"r\", \"s\", \"t\", \"u\", \"v\", \"w\", \"x\", \"y\", \"z\", \"a\", \"e\", \"i\", \"o\", \"o\", \"o\", \"u\", \"u\", \"a\", \"e\", \"i\", \"o\", \"o\", \"o\", \"u\", \"u\", \"u\", \"u\", \"");
+$nevjo  = str_replace($mit, $mire, $nev, $count);
+return $nevjo;
 }
 ?>

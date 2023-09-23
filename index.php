@@ -5,6 +5,7 @@ $ev=date("Y");
 $ho=date("m");
 if(isset($_GET["ev"])){ $ev = $_GET["ev"]; }
 if(isset($_GET["ho"])){ $ho = $_GET["ho"]; }
+munka_uj_feldolgoz();
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -34,8 +35,10 @@ if(isset($_GET["ho"])){ $ho = $_GET["ho"]; }
 					</div>
 					<div class="tabla_kozep">
 						<?php
+							
 							munka_fejlec(1,$ev,$ho);
 							munka(1,$ev,$ho);
+							munka_uj(1);
 						?>
 					</div>
 				</div>
