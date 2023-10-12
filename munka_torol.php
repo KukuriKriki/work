@@ -36,7 +36,6 @@ if(isset($_GET["worktime_id"])){ $worktime_id = $_GET["worktime_id"]; }
 					</div>
 					<div class="tabla_kozep">
 						<?php
-						
 						worktime_delet($user,$worktime_id);
 						header("Location:index.php");
 						?>

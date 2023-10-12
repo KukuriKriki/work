@@ -6,6 +6,7 @@ $ev=date("Y");
 $ho=date("m");
 if(isset($_GET["ev"])){ $ev = $_GET["ev"]; }
 if(isset($_GET["ho"])){ $ho = $_GET["ho"]; }
+if(isset($_GET["worktime_id"])){ $worktime_id = $_GET["worktime_id"]; }
 munka_uj_feldolgoz($user);
 
 ?>
@@ -38,9 +39,21 @@ munka_uj_feldolgoz($user);
 						<?php
 							
 							munka_fejlec($user,$ev,$ho);
-							munka($user,$ev,$ho);
+							munka($user,$ev,$ho,0);
 							munka_uj($user);
-							worktime_delet($user,59);
+							$m_dij=5000;
+							echo munkanev_keres(9)." ".ledolgozott_ido_munka($user,9)." óra";
+							echo "<br>Munkadíj:".$m_dij."  összesen=".ledolgozott_ido_munka($user,9)*$m_dij."Ft/Fő";
+							echo "<br>Teljes munkadíj két főre:".ledolgozott_ido_munka($user,9)*$m_dij*2 ."Ft<br><br>";
+							
+							echo munkanev_keres(10)." ".ledolgozott_ido_munka($user,10)." óra";
+							echo "<br>Munkadíj:". 4500 ."  összesen=".ledolgozott_ido_munka($user,10)*4500 ."Ft/Fő";
+							echo "<br>Teljes munkadíj két főre:".ledolgozott_ido_munka($user,10)*4500*2 ."Ft<br><br>";
+							
+							echo munkanev_keres(11)." ".ledolgozott_ido_munka($user,11)." óra";
+							echo "<br>Munkadíj:".$m_dij."  összesen=".ledolgozott_ido_munka($user,11)*$m_dij."Ft/Fő";
+							echo "<br>Teljes munkadíj két főre:".ledolgozott_ido_munka($user,11)*$m_dij*2 ."Ft<br><br>";
+							
 						?>
 					</div>
 				</div>
@@ -52,5 +65,9 @@ munka_uj_feldolgoz($user);
 		</body>
 	</html>
 <?php
+if($worktime_id)
+{
+	alert_delete($user,$worktime_id);
+}
 ob_end_flush();
 ?>

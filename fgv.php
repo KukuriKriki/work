@@ -35,7 +35,7 @@ function munka_fejlec($id,$ev,$ho)
 	echo user_keres($id);
 	echo "</div>";
 	echo "<div class='fejlec_datum'>";
-	echo $ev." ".honap($ho)." óra összeírás";
+	echo $ev." ".honap($ho)." óra összeírás <br><br>";
 	echo "</div>";	
 }
 //----------------------------------
@@ -43,35 +43,38 @@ function munka_fejlec($id,$ev,$ho)
 //Bemenő adatok: -
 //kimenő adat: -
 //----------------------------------
-function munka($id,$ev,$ho)
+function munka($id,$ev,$ho,$munka)
 {
 	include("dbconn.php");
 	try
 	{
 		$hoand=$ho+1;
-		$sql = "SELECT * FROM `worktime` WHERE `user_id`=$id AND `start`>\"$ev-$ho-01\" AND `stop`<\"$ev-$hoand-01\"ORDER BY `start`";
-		echo $sql;
+		
+		if($munka){$sql = "SELECT * FROM `worktime` WHERE `user_id`=$id AND `work_id`=$munka AND`start`>\"$ev-$ho-01\" AND `stop`<\"$ev-$hoand-01\"ORDER BY `start`";}
+		else{$sql = "SELECT * FROM `worktime` WHERE `user_id`=$id AND`start`>\"$ev-$ho-01\" AND `stop`<\"$ev-$hoand-01\"ORDER BY `start`";}
 		$res = $conn->query($sql); // az utasítás csak most fut le
 		// a táblázat sorai
 		echo "<table>";
 		echo "<tr>";
-		echo "<th class='id'>Id</th>";
-		echo "<th class='user_id'>user_id</th>";
-		echo "<th class='work_id'>work_id</th>";	
-		echo "<th class='start'>Start</th>";
-		echo "<th class='stop'>Stop</th>";
-		echo "<th class='pause'>Pause</th>";
+		echo "<th class='id'>Nap</th>";
+		echo "<th class='user_id'>Dátum</th>";
+		echo "<th class='work_id'>Munka neve</th>";	
+		echo "<th class='start'>Kezdés</th>";
+		echo "<th class='stop'>Befejezés</th>";
+		echo "<th class='pause'>Szünet</th>";
 		echo "<th class='work_time'>Ledolgozott iő</th>";		
-		echo "<th class='ido'>idő</th>";		
+		echo "<th class='ido'>Rögzítési idő</th>";
+		echo "<th class='pause'>Állapot</th>";		
 		echo "</tr>";
 		while ($user = $res->fetch())
 		{
 			$nap=het_napja($user["start"]);
-			$datum=ev_honap_nap($user["start"]);
+			$datum=datum_nap($user["start"]);
+			$status=status($user["status"]);
 			if(felvett_munka_ellenorzes($id,$user["work_id"]))
 			{
-			$delete_link="munka_torol.php?worktime_id=$user[id]";
-			print("<tr class='adatsor'><td class='id'>$nap</td> <td class='user_id'>$datum</td> <td class='work_id'>".munkanev_keres($user["work_id"])."</td> <td class='start'>".ora_perc($user["start"])."</td> <td class='stop'>".ora_perc($user["stop"])."</td> <td class='pause'>$user[pause]</td> <td class='work_time'>$user[work_time]</td><td class='ido'>$user[time]</td><td><div class'record_delet'><a href=$delete_link><img src='./image/1x15.png'></a></div></td></tr>");
+			$delete_link="index.php?worktime_id=$user[id]";
+			print("<tr class='adatsor'><td class='id'>$nap</td> <td class='user_id'>$datum</td> <td class='work_id'>".munkanev_keres($user["work_id"])."</td> <td class='start'>".ora_perc($user["start"])."</td> <td class='stop'>".ora_perc($user["stop"])."</td> <td class='pause'>$user[pause]</td> <td class='work_time'>$user[work_time]</td><td class='ido'>$user[time]</td><td><div class='record_status'>$status</div></td><td><div class='record_delet'><a href=$delete_link><img src='./image/1x15.png'></a></div></td></tr>");
 			}
 		}
 		echo "</table><br>";
@@ -120,25 +123,6 @@ include("dbconn.php");
 	return ($adat["vezetek_nev"]." ".$adat["kereszt_nev"]);
 }
 //Leírás: Egy adott worktime id sorának a ledolgozott idejét adja vissza.
-//Bemenő adatok: worktime id száma.
-//kimenő adat: A ledolgozott idő órában.
-//----------------------------------
-function ledolgozott_ido($id)
-{
-include("dbconn.php");
-	try
-	{
-		$sql = "SELECT ROUND(((`stop`-`start`)/10000 -(`pause`/60)),1) FROM `worktime` WHERE `id`=$id";// ez csak egy string, még nem hajtódik végre
-		$res = $conn->query($sql); // az utasítás csak most fut le
-		$adat = $res->fetch();
-	}
-	catch(PDOException $e)
-	{
-		echo $e->getMessage();
-	}
-	return $adat[0];
-}
-//Leírás: Egy adott worktime id sorának a ledolgozott idejét adja vissza.
 //Bemenő adatok: User id száma, év, hó.
 //kimenő adat: A ledolgozott idő órában.
 //----------------------------------
@@ -165,6 +149,25 @@ function teszt()
 	$adat="Work";
 	print("Ez egy próba szöveg".nev()."<br>".user_kiir());
 }
+//Leírás: Egy munka teljes ledolgozott idejét adja vissza.
+//Bemenő adatok: User id száma,munka száma
+//kimenő adat: A ledolgozott idő órában.
+//----------------------------------
+function ledolgozott_ido_munka($id,$work_id)
+{
+include("dbconn.php");
+	try
+	{
+	$sql = "SELECT SUM(work_time) FROM `worktime` WHERE `user_id`=$id AND `work_id`=$work_id";
+		$res = $conn->query($sql); // az utasítás csak most fut le
+		$adat = $res->fetch();
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+	return $adat[0];
+}
 //----------------------------------
 //Leírás: Dátumot év.ho.nap formátumra szűkít..
 //Bemenő Teljes dátum.
@@ -174,6 +177,24 @@ function ev_honap_nap($ido)
 {
 	$datum=strtotime($ido);
 	$rovid=date("Y.m.d",$datum);
+	if(!$datum)
+	{
+		return "";
+	}
+	else
+	{
+		return $rovid;
+	}
+}
+//----------------------------------
+//Leírás: Dátumot nap formátumra szűkít..
+//Bemenő Teljes dátum.
+//kimenő adat: Szöveg ami a rövid dátum formátumot tartalmazza..
+//----------------------------------
+function datum_nap($ido)
+{
+	$datum=strtotime($ido);
+	$rovid=date("d",$datum);
 	if(!$datum)
 	{
 		return "";
@@ -489,7 +510,7 @@ function munka_uj_feldolgoz($user)
 		$ertek_4=$munka_datum." ".$munka_start.":00";
 		$ertek_5=$munka_datum." ".$munka_stop.":00";
 		$ertek_6=$munka_etkezes;
-		$ertek_7=8;
+		$ertek_7=ledolgozott_ido($ertek_4,$ertek_5,$ertek_6);
 		$ertek_8=time();
 			try
 			{
@@ -500,7 +521,10 @@ function munka_uj_feldolgoz($user)
 				$beszur->bindParam(':ertek5', $ertek_5);
 				$beszur->bindParam(':ertek6', $ertek_6);
 				$beszur->bindParam(':ertek7', $ertek_7);
-			$beszur->execute();
+				if($ertek_7>0)
+				{	
+					$beszur->execute();
+				}
 			}
 			catch(PDOException $e)
 			{
@@ -561,6 +585,121 @@ function worktime_delet($user_id,$worktime_id)
 		echo $e->getMessage();
 	}
 }
+//Leírás: Egy adat törlése a worktime táblából.
+//Bemenő adatok: User id száma, worktime_id.
+//kimenő adat: -
+//----------------------------------
+function alert_delete($user_id,$worktime_id)
+{
+	include("dbconn.php");
+	try
+	{
+		$sql = "SELECT * FROM `worktime` LEFT JOIN work on worktime.work_id=work.work_id where id=$worktime_id"; // ez csak egy string, még nem hajtódik végre
+		$res = $conn->query($sql); // az utasítás csak most fut le
+		$adat = $res->fetch();
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+	$work_name=$adat["work_name"];
+	$start=$adat["start"];
+	echo "<div id='alert_ablak'>";
+	echo "	<div id='log_figyelmeztet_kicsi'>";
+	echo "		<div class='tabla_fej_kicsi_alert'>";
+	echo "		</div>";
+	echo "		<div class='tabla_kozep_kicsi_alert'>";
+	echo "			<div class='kozepre'>";
+	echo "				<b>";
+	echo "					Adatbázisból egy mfelvett munka törlése!<br>";
+	echo "				</b><br>";
+	echo "					Kérésére az adatbázisból az alábbi adat lesz törölve.<br><br>Megnevezés: $work_name <br>Dátum: $start";
+	echo "				";
+	echo "			</div>";
+	echo "			<table><tr><td>";
+	echo "			<form action=\"./munka_torol.php?worktime_id=$worktime_id\" method=\"post\">";	
+	echo "				<div class=\"gomb\">";
+	echo "					<input type=\"submit\" value=\"Rendben\" title=\"Igen. Törölni akarom a bejegyzést.\">";
+	echo "				</div>";
+	echo "			</form></td><td>";
+	echo "			<form action=\"./index.php\" method=\"post\">";	
+	echo "				<div class=\"gomb\">";
+	echo "					<input type=\"submit\" value=\"Mégsem\" title=\"Meggondoltam magam. Nem törlök semmit.\">";
+	echo "				</div>";
+	echo "			</form></td></tr></table>";
+	echo "		</div>";
+	echo "		<div class='tabla_lab_kicsi_alert'>";
+	echo "		</div>";
+	echo "	</div>";
+	echo "</div>";
+}
+//----------------------------------
+//Leírás: ledolgozott időt számolja ki.
+//Bemenő adatok: rögzített munka id
+//kimenő adat: Adatbázisba rögzíti az eredményt.
+//----------------------------------
 
+function ledolgozott_ido_szamitas($id)
+{
+	include("dbconn.php");
+	$sql = "SELECT `id`,`start`,`stop`,`pause` FROM `worktime` WHERE `id`=$id";
+	try
+	{
+		$res = $conn->query($sql); // az utasítás csak most fut le
+		// a táblázat sorai
+		$user = $res->fetch();
+		$start=strtotime($user["start"]);
+		$stop=strtotime($user["stop"]);
+		$pause=$user["pause"];
+		$munka_ido=($stop-$start)/3600-($pause/60);
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}
+	$sql = "UPDATE `worktime` SET `work_time` = $munka_ido WHERE `worktime`.`id` = $id";
+	try
+	{
+		$res = $conn->query($sql); // az utasítás csak most fut le
+	}
+	catch(PDOException $e)
+	{
+		echo $e->getMessage();
+	}	
+}
+//----------------------------------
+//Leírás: ledolgozott időt számolja ki.
+//Bemenő adatok: start, stop, pause
+//kimenő adat:Visszatér az eredménnyel.
+//----------------------------------
 
+function ledolgozott_ido($start,$stop,$pause)
+{
+	$start=strtotime($start);
+	$stop=strtotime($stop);
+	$munka_ido=($stop-$start)/3600-($pause/60);
+	return $munka_ido;
+}
+//----------------------------------
+//Leírás: Státusz logó kiírása
+//Bemenő adatok: status
+//kimenő adat: Statusz logo kép
+//----------------------------------
+
+function status($status)
+{
+	switch ($status) {
+		case 0:
+			return "<img src='./image/work.png' title='Ledolgozott idő'>";
+			break;
+		case 1:
+			return "<img src='./image/bill.png' title='Kiszámlázott idő'>";
+			break;
+		case 2:
+			return "<img src='./image/cash.png' title='Kifizetett idő'>";
+			break;
+		default:
+			echo "Nem jó formátum a hónap kiíráshoz";
+		}	
+}
 ?>
